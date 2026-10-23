@@ -1,17 +1,14 @@
 
 const SYSTEM_PROMPT = `
 Tu es MADARA AI, un assistant polyvalent, direct,
-créatif et attentif aux besoins de l'utilisateur.
+créatif et attentif.
 
-Tes capacités incluent la programmation, l'éducation,
-la rédaction, l'analyse, le raisonnement et la création.
-
-Réponds naturellement, sans jugement.
-Évite les refus inutiles. Si une demande est légitime,
-aide concrètement au lieu de refuser par défaut.
-Si tu ne sais pas, indique clairement tes incertitudes.
-Ne prétends jamais avoir exécuté une action que tu
-n'as pas réellement exécutée.
+Aide concrètement pour programmer, apprendre, analyser,
+rédiger et créer. Réponds naturellement en français
+si l'utilisateur écrit en français.
+Privilégie les réponses claires et concises.
+Développe davantage si l'utilisateur le demande.
+Sois honnête sur tes incertitudes.
 `;
 
 export default async function handler(req, res) {
@@ -26,32 +23,32 @@ export default async function handler(req, res) {
 
   if (!apiKey) {
     return res.status(500).json({
-      error: "Clé API absente. Configure OPENROUTER_API_KEY sur Vercel."
+      error: "Clé API absente sur Vercel."
     });
   }
 
+  const messages = req.body?.messages;
+
+  if (
+    !Array.isArray(messages) ||
+    messages.length === 0 ||
+    messages[messages.length - 1]?.role !== "user" ||
+    messages.some((m) =>
+      !m ||
+      !["user", "assistant"].includes(m.role) ||
+      typeof m.content !== "string" ||
+      m.content.length > 4000
+    )
+  ) {
+    return res.status(400).json({
+      error: "Conversation invalide."
+    });
+  }
+
+  // Réduit la quantité de contexte envoyée au modèle.
+  const history = messages.slice(-10);
+
   try {
-    const messages = req.body?.messages;
-
-    if (!Array.isArray(messages) || messages.length === 0) {
-      return res.status(400).json({
-        error: "Écris un message pour commencer."
-      });
-    }
-
-    const valid = messages.slice(-20).every((m) =>
-      m &&
-      ["user", "assistant"].includes(m.role) &&
-      typeof m.content === "string" &&
-      m.content.length <= 4000
-    );
-
-    if (!valid || messages[messages.length - 1]?.role !== "user") {
-      return res.status(400).json({
-        error: "Format de conversation invalide."
-      });
-    }
-
     const upstream = await fetch(
       "https://openrouter.ai/api/v1/chat/completions",
       {
@@ -65,20 +62,27 @@ export default async function handler(req, res) {
           model: "openrouter/free",
           messages: [
             { role: "system", content: SYSTEM_PROMPT },
-            ...messages.slice(-20)
+            ...history
           ],
-          temperature: 0.8,
-          max_tokens: 1500
-        })
+          temperature: 0.5,
+          max_tokens: 600,
+          stream: false
+        }),
+        signal: AbortSignal.timeout(45000)
       }
     );
 
     const data = await upstream.json();
 
     if (!upstream.ok) {
-      console.error("OpenRouter error:", upstream.status);
+      console.error(
+        "OpenRouter error:",
+        upstream.status,
+        data.error?.message || ""
+      );
+
       return res.status(502).json({
-        error: "Le modèle est temporairement indisponible. Réessaie."
+        error: "Le modèle est indisponible. Réessaie."
       });
     }
 
@@ -86,15 +90,17 @@ export default async function handler(req, res) {
 
     if (typeof reply !== "string" || !reply.trim()) {
       return res.status(502).json({
-        error: "Le modèle n'a pas retourné de réponse."
+        error: "Aucune réponse reçue du modèle."
       });
     }
 
     return res.status(200).json({ reply });
+
   } catch (error) {
-    console.error("MADARA AI error:", error.message);
-    return res.status(500).json({
-      error: "Erreur interne. Réessaie plus tard."
+    console.error("MADARA AI:", error.message);
+
+    return res.status(504).json({
+      error: "La réponse prend trop de temps. Réessaie."
     });
   }
 }
