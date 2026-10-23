@@ -13,34 +13,30 @@ export default async function handler(req, res) {
 
   if (!token) {
     return res.status(500).json({
-      error: "La variable HF_TOKEN manque dans Vercel."
+      error: "HF_TOKEN est absent des variables Vercel."
     });
   }
 
   const { prompt, style = "cinematic" } = req.body || {};
 
-  if (
-    typeof prompt !== "string" ||
-    !prompt.trim() ||
-    prompt.length > 1500
-  ) {
+  if (typeof prompt !== "string" || !prompt.trim() || prompt.length > 1500) {
     return res.status(400).json({
-      error: "Décris ton image en 1 500 caractères maximum."
+      error: "Entre une description de 1 500 caractères maximum."
     });
   }
 
   const styles = {
-    cinematic: "cinematic lighting, dramatic composition, ultra detailed",
-    anime: "anime illustration, expressive details, vibrant colors",
-    realistic: "photorealistic, realistic lighting, fine details",
-    fantasy: "epic fantasy art, magical atmosphere, intricate details",
+    cinematic: "cinematic lighting, dramatic composition, detailed",
+    anime: "anime illustration, vibrant colors, detailed",
+    realistic: "photorealistic, realistic lighting, detailed",
+    fantasy: "fantasy art, magical atmosphere, detailed",
     digital: "professional digital art, polished composition",
-    3d: "high quality 3D render, detailed materials, studio lighting"
+    "3d": "high quality 3D render, studio lighting, detailed"
   };
 
   if (!Object.prototype.hasOwnProperty.call(styles, style)) {
     return res.status(400).json({
-      error: "Style non reconnu."
+      error: "Style inconnu."
     });
   }
 
@@ -50,18 +46,17 @@ export default async function handler(req, res) {
     const image = await client.textToImage({
       model: "black-forest-labs/FLUX.1-schnell",
       inputs: `${prompt.trim()}, ${styles[style]}`,
-      provider: "auto"
+      provider: "auto",
+      parameters: {
+        num_inference_steps: 4
+      }
     });
-
-    if (!image || typeof image.arrayBuffer !== "function") {
-      throw new Error("Le modèle n'a pas renvoyé d'image.");
-    }
 
     const buffer = Buffer.from(await image.arrayBuffer());
     const mimeType = image.type || "image/png";
 
     if (!mimeType.startsWith("image/")) {
-      throw new Error("Format d'image inattendu.");
+      throw new Error("Le fournisseur n'a pas renvoyé une image.");
     }
 
     return res.status(200).json({
@@ -71,10 +66,13 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error("Erreur image IA:", error.message);
+    console.error("MADARA IMAGE ERROR:", {
+      message: error?.message,
+      status: error?.httpResponse?.status || error?.status
+    });
 
     return res.status(502).json({
-      error: "La génération a échoué. Vérifie l'accès au modèle Hugging Face et les limites de ton compte."
+      error: "Échec de génération. Consulte les journaux Vercel pour connaître la cause."
     });
   }
 }
