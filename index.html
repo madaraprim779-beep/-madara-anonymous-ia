@@ -1,489 +1,757 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#09090c">
-<meta name="description" content="MADARA AI — Ton intelligence. Ton pouvoir.">
-<title>MADARA AI — Dark Nexus</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#08050d">
+  <meta name="description" content="MADARA AI Cosmic Pro — Ton intelligence. Ton pouvoir.">
+  <title>MADARA AI — COSMIC PRO</title>
 
-<style>
-:root {
-  --bg:#09090c;
-  --panel:#111116;
-  --panel2:#18181f;
-  --red:#ff253a;
-  --red2:#c60020;
-  --text:#f6f6fa;
-  --muted:#9999a8;
-  --border:rgba(255,255,255,.09);
-}
-*{box-sizing:border-box}
-body{
-  margin:0;background:var(--bg);color:var(--text);
-  font-family:Inter,system-ui,-apple-system,Arial,sans-serif;
-  min-height:100vh;overflow:hidden;
-}
-button,input,textarea{font:inherit}
-button{cursor:pointer}
-.app{display:flex;height:100dvh}
-.sidebar{
-  width:270px;flex-shrink:0;background:#0d0d12;
-  border-right:1px solid var(--border);
-  display:flex;flex-direction:column;padding:20px 14px;
-  transition:transform .25s;
-}
-.brand{display:flex;align-items:center;gap:12px;padding:4px 8px 25px}
-.logo{
-  width:45px;height:45px;border-radius:14px;
-  display:grid;place-items:center;font-weight:1000;font-size:19px;
-  background:linear-gradient(145deg,#ff3347,#8d0016);
-  box-shadow:0 0 25px #ff253a35;
-}
-.brand strong{font-size:19px;letter-spacing:1px}
-.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:2px;margin-top:4px}
-.new-chat,.nav-button{
-  display:flex;align-items:center;gap:10px;width:100%;
-  border:1px solid var(--border);border-radius:12px;
-  background:var(--panel);color:var(--text);
-  padding:13px 14px;text-align:left;margin-bottom:9px;
-}
-.new-chat{border-color:#ff253a60;background:#ff253a0c}
-.new-chat:hover,.nav-button:hover{background:#ff253a17}
-.section-label{font-size:10px;color:var(--muted);letter-spacing:2px;margin:24px 10px 12px}
-.history{overflow:auto;flex:1}
-.history-item{
-  padding:11px;border-radius:9px;color:#c4c4ce;
-  font-size:13px;white-space:nowrap;overflow:hidden;
-  text-overflow:ellipsis;cursor:pointer;margin-bottom:3px;
-}
-.history-item:hover{background:var(--panel2)}
-.profile{
-  border-top:1px solid var(--border);padding:16px 5px 0;
-  display:flex;align-items:center;gap:11px;
-}
-.avatar{
-  width:38px;height:38px;border-radius:50%;
-  display:grid;place-items:center;background:#321018;color:#ff6878;
-  font-weight:800;
-}
-.profile small{display:block;color:var(--muted);margin-top:3px}
-.main{flex:1;min-width:0;display:flex;flex-direction:column}
-.topbar{
-  height:68px;flex-shrink:0;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 25px;background:#09090cdd;
-}
-.top-left{display:flex;align-items:center;gap:12px}
-.topbar h2{font-size:14px;margin:0;font-weight:650}
-.status{font-size:11px;color:#b7b7c4}
-.status:before{
-  content:"";display:inline-block;width:7px;height:7px;
-  border-radius:50%;background:#35d68a;margin-right:7px;
-}
-.icon-button{
-  border:1px solid var(--border);background:var(--panel);
-  color:white;border-radius:10px;padding:9px 11px;
-}
-.chat-area{
-  flex:1;overflow:auto;scroll-behavior:smooth;
-  padding:32px 18px 20px;
-}
-.welcome{max-width:720px;margin:7vh auto 30px;text-align:center}
-.orb{
-  width:76px;height:76px;margin:0 auto 25px;border-radius:25px;
-  display:grid;place-items:center;font-size:29px;font-weight:1000;
-  background:radial-gradient(circle at 30% 20%,#ff4d5e,#a0001b 70%);
-  box-shadow:0 0 60px #ff253a28, inset 0 0 15px #ffffff20;
-  animation:float 4s ease-in-out infinite;
-}
-@keyframes float{50%{transform:translateY(-5px)}}
-.welcome h1{font-size:clamp(30px,5vw,48px);letter-spacing:-1.7px;margin:0 0 14px}
-.welcome h1 span{
-  background:linear-gradient(90deg,#fff,#ff5263);
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
-.welcome p{color:var(--muted);line-height:1.7;margin:0 auto;max-width:470px}
-.suggestions{
-  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:10px;margin-top:30px;text-align:left;
-}
-.suggestion{
-  background:linear-gradient(145deg,#15151c,#101015);
-  border:1px solid var(--border);border-radius:15px;
-  color:white;padding:16px;min-height:85px;
-}
-.suggestion:hover{border-color:#ff253a80;transform:translateY(-2px)}
-.suggestion strong{display:block;font-size:13px;margin-bottom:7px}
-.suggestion span{font-size:12px;color:var(--muted)}
-.messages{max-width:800px;margin:0 auto}
-.message{display:flex;gap:12px;margin:24px 0;align-items:flex-start}
-.message .avatar{width:33px;height:33px;flex-shrink:0;font-size:12px}
-.message.user{flex-direction:row-reverse}
-.message.user .avatar{background:#262630;color:#fff}
-.bubble{
-  max-width:calc(100% - 45px);padding:14px 16px;
-  border:1px solid var(--border);border-radius:4px 16px 16px 16px;
-  background:var(--panel);font-size:14px;line-height:1.8;
-  overflow-wrap:anywhere;
-}
-.message.user .bubble{
-  background:#251015;border-color:#ff253a35;
-  border-radius:16px 4px 16px 16px;
-}
-.bubble pre{
-  white-space:pre-wrap;overflow-wrap:anywhere;
-  background:#08080b;padding:14px;border-radius:10px;
-  overflow:auto;border:1px solid var(--border);
-}
-.bubble code{font-family:monospace;font-size:12px}
-.bubble img{max-width:100%;border-radius:12px}
-.composer-wrap{
-  padding:12px 18px 18px;
-  background:linear-gradient(transparent,var(--bg) 18%);
-}
-.composer{max-width:800px;margin:auto}
-.tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
-.tool{
-  background:transparent;border:1px solid var(--border);
-  border-radius:20px;color:#c4c4ce;padding:7px 12px;font-size:11px;
-}
-.tool.active{border-color:#ff253a;color:#ff6978;background:#ff253a10}
-.input-box{
-  border:1px solid #393943;border-radius:18px;
-  background:#141419;padding:12px;
-  box-shadow:0 10px 50px #0006;
-}
-.input-box:focus-within{border-color:#ff253a90}
-#prompt{
-  display:block;width:100%;min-height:48px;max-height:170px;
-  resize:vertical;background:transparent;border:0;outline:0;
-  color:white;padding:8px;font-size:14px;line-height:1.6;
-}
-.input-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.hint{font-size:10px;color:#777784;padding-left:8px}
-.send{
-  width:43px;height:43px;border:0;border-radius:13px;
-  background:linear-gradient(145deg,#ff3448,#c00021);
-  color:white;font-size:20px;font-weight:bold;
-  box-shadow:0 4px 18px #ff253a28;
-}
-.send:disabled{opacity:.5;cursor:wait}
-.disclaimer{text-align:center;font-size:10px;color:#656570;margin-top:10px}
-.typing{color:var(--muted);font-size:13px;animation:pulse 1s infinite}
-@keyframes pulse{50%{opacity:.4}}
-.toast{
-  position:fixed;bottom:25px;left:50%;transform:translateX(-50%);
-  background:#24242c;border:1px solid var(--border);
-  border-radius:12px;padding:12px 18px;font-size:13px;z-index:10;
-}
-.hidden{display:none!important}
-@media(max-width:700px){
-  .sidebar{
-    position:fixed;z-index:20;top:0;bottom:0;left:0;
-    transform:translateX(-105%);box-shadow:20px 0 70px #0009;
-  }
-  .sidebar.open{transform:translateX(0)}
-  .topbar{height:60px;padding:0 13px}
-  .chat-area{padding:18px 13px}
-  .welcome{margin-top:6vh}
-  .welcome h1{font-size:34px}
-  .suggestions{grid-template-columns:1fr}
-  .suggestion{min-height:auto;padding:13px}
-  .composer-wrap{padding:8px 11px 12px}
-  .hint{font-size:9px}
-}
-</style>
+  <style>
+    :root {
+      --bg: #07060b;
+      --panel: rgba(14, 12, 21, .92);
+      --red: #ff173f;
+      --purple: #a855f7;
+      --text: #f7f3ff;
+      --muted: #a6a0b4;
+      --border: rgba(255, 35, 77, .25);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    button, textarea { font: inherit; }
+    button { cursor: pointer; }
+
+    /* Fond galactique animé */
+    .cosmos {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse at 70% 15%, #431057 0, transparent 35%),
+        radial-gradient(ellipse at 35% 35%, #4b071f 0, transparent 38%),
+        radial-gradient(ellipse at 90% 70%, #21104e 0, transparent 35%),
+        #07060b;
+      animation: galaxy 14s ease-in-out infinite alternate;
+    }
+
+    .cosmos::before {
+      content: "";
+      position: absolute;
+      inset: -30%;
+      background-image:
+        radial-gradient(2px 2px at 10% 20%, white 50%, transparent 60%),
+        radial-gradient(1px 1px at 30% 70%, #ff6689 50%, transparent 60%),
+        radial-gradient(2px 2px at 60% 40%, #cba5ff 50%, transparent 60%),
+        radial-gradient(1px 1px at 80% 80%, white 50%, transparent 60%),
+        radial-gradient(1px 1px at 90% 15%, #ff315d 50%, transparent 60%);
+      background-size: 220px 220px, 280px 280px,
+                       190px 190px, 240px 240px, 300px 300px;
+      opacity: .65;
+      animation: stars 80s linear infinite;
+    }
+
+    .cosmos::after {
+      content: "";
+      position: absolute;
+      width: 90vw;
+      height: 40vw;
+      left: 10%;
+      top: 10%;
+      border-radius: 50%;
+      background: linear-gradient(110deg,
+        transparent 20%, #7e154c66 40%,
+        #9e45ff66 55%, #ff174466 68%, transparent 80%);
+      filter: blur(65px);
+      transform: rotate(-24deg);
+    }
+
+    @keyframes galaxy {
+      from { filter: hue-rotate(-8deg); }
+      to { filter: hue-rotate(12deg); }
+    }
+
+    @keyframes stars {
+      from { transform: translateY(0); }
+      to { transform: translateY(-220px); }
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 255px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    aside {
+      min-height: 100vh;
+      padding: 20px 14px;
+      background: rgba(5, 4, 9, .91);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      backdrop-filter: blur(18px);
+    }
+
+    .brand {
+      text-align: center;
+      padding: 15px 5px 22px;
+    }
+
+    .brand-logo {
+      width: 86px;
+      height: 86px;
+      margin: 0 auto 12px;
+      border: 2px solid var(--red);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 37px;
+      font-weight: 900;
+      color: white;
+      background: radial-gradient(circle, #69152f, #120814 65%);
+      box-shadow: 0 0 28px #ff173f55, inset 0 0 25px #ff173f44;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: 2px;
+    }
+
+    .brand h1 span { color: var(--red); }
+
+    .brand p {
+      color: #d0a9f9;
+      font-size: 10px;
+      letter-spacing: 4px;
+      margin: 7px 0 0;
+    }
+
+    .new-chat, .nav-btn, .mode-btn, .send-btn {
+      border: 1px solid var(--border);
+      color: var(--text);
+      background: rgba(255,255,255,.025);
+      border-radius: 12px;
+      transition: .2s;
+    }
+
+    .new-chat {
+      padding: 13px;
+      background: #ed12321a;
+      border-color: var(--red);
+      box-shadow: 0 0 18px #ff173f16;
+    }
+
+    .new-chat:hover, .nav-btn:hover, .mode-btn:hover {
+      border-color: var(--red);
+      background: #ff173f18;
+    }
+
+    .nav {
+      display: grid;
+      gap: 7px;
+      margin-top: 5px;
+    }
+
+    .nav-btn {
+      text-align: left;
+      padding: 12px;
+      color: #c9c3d2;
+    }
+
+    .nav-btn.active {
+      color: #ff4564;
+      border-color: #a91636;
+      background: linear-gradient(90deg, #ff173f20, transparent);
+    }
+
+    .recent-title {
+      margin-top: 18px;
+      padding: 12px 4px 5px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .recent {
+      display: block;
+      width: 100%;
+      padding: 10px 4px;
+      border: 0;
+      background: none;
+      color: #c8c3d2;
+      text-align: left;
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    .profile {
+      margin-top: auto;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #ffffff06;
+    }
+
+    .profile strong { color: var(--red); }
+    .profile small { display: block; color: var(--muted); margin-top: 5px; }
+
+    main {
+      min-width: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      min-height: 76px;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid #ffffff0d;
+      background: #08060c66;
+      backdrop-filter: blur(14px);
+    }
+
+    .header-title { font-weight: 800; letter-spacing: 1px; }
+    .header-title small {
+      display: block;
+      margin-top: 5px;
+      font-size: 10px;
+      color: var(--red);
+      letter-spacing: 2px;
+    }
+
+    .status {
+      color: #bfb7cb;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .status::before {
+      content: "";
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #22d878;
+      margin-right: 7px;
+    }
+
+    .pro {
+      padding: 10px 13px;
+      border: 1px solid #7f39a955;
+      border-radius: 25px;
+      background: #9b39ff12;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .content {
+      width: 100%;
+      max-width: 1050px;
+      margin: 0 auto;
+      padding: 35px 24px 20px;
+      flex: 1;
+    }
+
+    .welcome {
+      text-align: center;
+      padding: 24px 8px 32px;
+    }
+
+    .eye {
+      width: 82px;
+      height: 82px;
+      margin: 0 auto 22px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 39px;
+      background: radial-gradient(circle, #5c173b, #100a18 70%);
+      border: 1px solid #b52dff;
+      box-shadow: 0 0 30px #a855f755, 0 0 50px #ff173f22;
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      50% { box-shadow: 0 0 45px #a855f799, 0 0 70px #ff173f33; }
+    }
+
+    .welcome h2 {
+      font-size: clamp(22px, 4vw, 34px);
+      margin: 0 0 12px;
+    }
+
+    .welcome h2 span { color: var(--red); }
+
+    .welcome p {
+      color: #b8afc4;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .mode-row {
+      display: flex;
+      gap: 9px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 0 0 24px;
+    }
+
+    .mode-btn {
+      padding: 11px 15px;
+      font-size: 12px;
+    }
+
+    .mode-btn.active {
+      border-color: var(--red);
+      color: #ff526d;
+      background: #ff173f18;
+    }
+
+    #messages {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      padding-bottom: 20px;
+    }
+
+    .message {
+      max-width: 88%;
+      padding: 16px 18px;
+      border: 1px solid #ffffff12;
+      border-radius: 15px;
+      line-height: 1.65;
+      font-size: 14px;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+    }
+
+    .message.user {
+      align-self: flex-end;
+      border-color: #a51636;
+      background: linear-gradient(135deg, #45101d99, #140b13);
+    }
+
+    .message.ai {
+      align-self: flex-start;
+      background: rgba(10, 10, 17, .91);
+      border-color: #7f39a944;
+    }
+
+    .message b {
+      display: block;
+      color: #ff4969;
+      margin-bottom: 6px;
+    }
+
+    .message img {
+      display: block;
+      max-width: 100%;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+
+    .composer-wrap {
+      position: sticky;
+      bottom: 0;
+      padding: 15px 20px 20px;
+      background: linear-gradient(transparent, #08060bf2 22%);
+    }
+
+    .composer {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid var(--red);
+      border-radius: 18px;
+      background: rgba(13, 11, 19, .96);
+      box-shadow: 0 0 25px #ff173f18;
+    }
+
+    textarea {
+      flex: 1;
+      min-width: 0;
+      resize: vertical;
+      min-height: 42px;
+      max-height: 160px;
+      padding: 12px 8px;
+      color: white;
+      background: transparent;
+      border: 0;
+      outline: none;
+    }
+
+    textarea::placeholder { color: #827b90; }
+
+    .send-btn {
+      width: 46px;
+      height: 46px;
+      flex-shrink: 0;
+      background: #d90d30;
+      border-color: #ff4260;
+      font-size: 20px;
+    }
+
+    .send-btn:disabled { opacity: .5; cursor: wait; }
+
+    .hint {
+      text-align: center;
+      color: #797184;
+      font-size: 11px;
+      margin: 12px 0 0;
+    }
+
+    .notice {
+      color: #ff9aac;
+      font-size: 12px;
+      text-align: center;
+      margin: 10px;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 760px) {
+      .app { grid-template-columns: 1fr; }
+
+      aside {
+        min-height: auto;
+        padding: 10px;
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .brand {
+        padding: 5px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-align: left;
+      }
+
+      .brand-logo {
+        width: 48px;
+        height: 48px;
+        margin: 0;
+        font-size: 23px;
+        flex-shrink: 0;
+      }
+
+      .brand h1 { font-size: 17px; }
+      .brand p { letter-spacing: 2px; }
+      .new-chat { padding: 10px; }
+      .nav {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px;
+      }
+
+      .nav-btn { padding: 10px 7px; font-size: 12px; }
+      .recent-title, .recent, .profile { display: none; }
+      header { min-height: 65px; padding: 12px; }
+      .content { padding: 22px 12px; }
+      .welcome { padding: 20px 4px 24px; }
+      .welcome p { font-size: 13px; }
+      .message { max-width: 96%; font-size: 13px; }
+      .composer-wrap { padding: 10px 10px 15px; }
+      .pro { padding: 8px; font-size: 10px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
 </head>
 
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar">
-    <div class="brand">
-      <div class="logo">M</div>
-      <div><strong>MADARA AI</strong><small>DARK NEXUS · V1.0</small></div>
-    </div>
+  <div class="cosmos"></div>
 
-    <button class="new-chat" id="newChat">＋ Nouvelle conversation</button>
-
-    <div class="section-label">ESPACE IA</div>
-    <button class="nav-button" id="chatNav">◈ &nbsp; Discussion IA</button>
-    <button class="nav-button" id="imageNav">▧ &nbsp; Génération d'images</button>
-
-    <div class="section-label">RÉCENT</div>
-    <div class="history" id="history"></div>
-
-    <div class="profile">
-      <div class="avatar">M</div>
-      <div><strong>MADARA</strong><small>Assistant personnel</small></div>
-    </div>
-  </aside>
-
-  <main class="main">
-    <header class="topbar">
-      <div class="top-left">
-        <button class="icon-button" id="menuBtn" aria-label="Ouvrir le menu">☰</button>
-        <div><h2 id="modeTitle">MADARA AI</h2><div class="status">Interface prête</div></div>
-      </div>
-      <button class="icon-button" id="clearBtn" title="Effacer la conversation">＋</button>
-    </header>
-
-    <section class="chat-area" id="chatArea">
-      <div class="welcome" id="welcome">
-        <div class="orb">M</div>
-        <h1>TON INTELLIGENCE.<br><span>TON POUVOIR.</span></h1>
-        <p>Bienvenue dans MADARA AI. Réfléchis, crée, apprends et développe tes idées avec ton assistant intelligent.</p>
-        <div class="suggestions">
-          <button class="suggestion" data-prompt="Crée un site web moderne en HTML, CSS et JavaScript."><strong>⌘ Développement</strong><span>Construire un site ou une application</span></button>
-          <button class="suggestion" data-prompt="Explique-moi cette notion simplement, avec des exemples."><strong>◇ Apprentissage</strong><span>Comprendre une leçon facilement</span></button>
-          <button class="suggestion" data-prompt="Aide-moi à trouver une idée de projet numérique réalisable avec un budget de 0 FCFA."><strong>↗ Idées de projets</strong><span>Imaginer et préparer un projet</span></button>
-          <button class="suggestion" data-prompt="Écris un prompt détaillé pour une image futuriste noire et rouge, style cinématique."><strong>✧ Créativité</strong><span>Imaginer de nouveaux concepts</span></button>
+  <div class="app">
+    <aside>
+      <div class="brand">
+        <div class="brand-logo">眼</div>
+        <div>
+          <h1>MADARA <span style="color:#ff173f">AI</span></h1>
+          <p>COSMIC PRO</p>
         </div>
       </div>
-      <div class="messages" id="messages"></div>
-    </section>
 
-    <section class="composer-wrap">
-      <div class="composer">
-        <div class="tools">
-          <button class="tool active" id="textMode">✦ Discussion</button>
-          <button class="tool" id="imageMode">▧ Images</button>
-        </div>
-        <div class="input-box">
-          <textarea id="prompt" rows="2" placeholder="Écris ton message à MADARA AI…"></textarea>
-          <div class="input-bottom">
-            <span class="hint" id="inputHint">Entrée pour envoyer · Maj + Entrée pour une nouvelle ligne</span>
-            <button class="send" id="sendBtn" aria-label="Envoyer">↑</button>
-          </div>
-        </div>
-        <div class="disclaimer">MADARA AI peut faire des erreurs. Vérifie les informations importantes.</div>
+      <button class="new-chat" id="newChat">＋ Nouvelle conversation</button>
+
+      <nav class="nav">
+        <button class="nav-btn active" data-mode="chat">◈ Discussion IA</button>
+        <button class="nav-btn" data-mode="image">▧ Génération d’images</button>
+      </nav>
+
+      <div class="recent-title">CONVERSATIONS RÉCENTES</div>
+      <div id="recentList">
+        <button class="recent">Bienvenue dans MADARA AI</button>
       </div>
-    </section>
-  </main>
-</div>
 
-<div class="toast hidden" id="toast"></div>
+      <div class="profile">
+        <strong>◉ MADARA</strong>
+        <small>Assistant IA personnel</small>
+        <small>Mode : COSMIC PRO</small>
+      </div>
+    </aside>
 
-<script>
-const $ = id => document.getElementById(id);
-const promptBox = $("prompt");
-const messagesBox = $("messages");
-const welcome = $("welcome");
+    <main>
+      <header>
+        <div class="header-title">
+          MADARA AI
+          <small>DARK GALAXY INTERFACE</small>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span class="status">En ligne</span>
+          <span class="pro">✧ COSMIC PRO</span>
+        </div>
+      </header>
 
-let messages = [];
-let busy = false;
-let mode = "chat";
-let conversations = [];
-let currentId = Date.now();
+      <section class="content">
+        <div class="welcome" id="welcome">
+          <div class="eye">◉</div>
+          <h2>TON <span>INTELLIGENCE.</span> TON POUVOIR.</h2>
+          <p>
+            Bienvenue dans MADARA AI. Réfléchis, crée, apprends
+            et développe tes idées avec ton assistant intelligent.
+          </p>
+        </div>
 
-function notify(text) {
-  const toast = $("toast");
-  toast.textContent = text;
-  toast.classList.remove("hidden");
-  setTimeout(() => toast.classList.add("hidden"), 3000);
-}
+        <div class="mode-row">
+          <button class="mode-btn active" data-mode="chat">◈ Discussion IA</button>
+          <button class="mode-btn" data-mode="image">▧ Créer une image</button>
+        </div>
 
-function escapeHTML(text) {
-  return String(text).replace(/[&<>"']/g, c => ({
-    "&":"&amp;", "<":"&lt;", ">":"&gt;",
-    '"':"&quot;", "'":"&#39;"
-  }[c]));
-}
+        <div id="messages" aria-live="polite"></div>
+        <div id="notice" class="notice" role="status"></div>
+      </section>
 
-/* Affichage simple et sécurisé du texte et des blocs de code */
-function formatText(text) {
-  const safe = escapeHTML(text);
-  return safe.replace(/```([a-zA-Z0-9_-]*)\n?([\s\S]*?)```/g,
-    (_, lang, code) =>
-      '<pre><code>' + (lang ? '// ' + escapeHTML(lang) + '\n' : '') +
-      code + '</code></pre>'
-  ).replace(/\n/g, "<br>");
-}
+      <div class="composer-wrap">
+        <form class="composer" id="composer">
+          <textarea id="prompt" rows="1"
+            placeholder="Écris ton message à MADARA AI..."
+            aria-label="Ton message"></textarea>
+          <button class="send-btn" id="send" type="submit" aria-label="Envoyer">➤</button>
+        </form>
+        <p class="hint" id="hint">Entrée pour envoyer · Maj + Entrée pour une nouvelle ligne</p>
+      </div>
+    </main>
+  </div>
 
-function addMessage(role, content) {
-  welcome.classList.add("hidden");
+  <script>
+    const messages = document.getElementById("messages");
+    const promptInput = document.getElementById("prompt");
+    const composer = document.getElementById("composer");
+    const sendButton = document.getElementById("send");
+    const welcome = document.getElementById("welcome");
+    const notice = document.getElementById("notice");
+    const hint = document.getElementById("hint");
+    const recentList = document.getElementById("recentList");
 
-  const row = document.createElement("div");
-  row.className = "message " + (role === "user" ? "user" : "assistant");
+    let mode = "chat";
+    let history = [];
 
-  const avatar = document.createElement("div");
-  avatar.className = "avatar";
-  avatar.textContent = role === "user" ? "M" : "AI";
+    function setMode(nextMode) {
+      mode = nextMode;
 
-  const bubble = document.createElement("div");
-  bubble.className = "bubble";
-  bubble.innerHTML = formatText(content);
+      document.querySelectorAll("[data-mode]").forEach(button => {
+        button.classList.toggle("active", button.dataset.mode === mode);
+      });
 
-  row.append(avatar, bubble);
-  messagesBox.appendChild(row);
-  $("chatArea").scrollTop = $("chatArea").scrollHeight;
-  return bubble;
-}
+      promptInput.placeholder = mode === "chat"
+        ? "Écris ton message à MADARA AI..."
+        : "Décris l’image que tu veux créer...";
 
-function saveCurrent() {
-  if (!messages.length) return;
+      hint.textContent = mode === "chat"
+        ? "Entrée pour envoyer · Maj + Entrée pour une nouvelle ligne"
+        : "Décris précisément l’image à générer.";
 
-  const title = (messages.find(m => m.role === "user")?.content || "Conversation")
-    .slice(0, 48);
+      notice.textContent = "";
+      promptInput.focus();
+    }
 
-  const existing = conversations.findIndex(c => c.id === currentId);
-  const item = { id: currentId, title, messages };
-
-  if (existing >= 0) conversations[existing] = item;
-  else conversations.unshift(item);
-
-  conversations = conversations.slice(0, 30);
-
-  try {
-    localStorage.setItem("madara_ai_history", JSON.stringify(conversations));
-  } catch (_) {}
-
-  renderHistory();
-}
-
-function loadHistory() {
-  try {
-    conversations = JSON.parse(localStorage.getItem("madara_ai_history") || "[]");
-    if (!Array.isArray(conversations)) conversations = [];
-  } catch (_) {
-    conversations = [];
-  }
-  renderHistory();
-}
-
-function renderHistory() {
-  $("history").innerHTML = "";
-
-  conversations.forEach(item => {
-    const el = document.createElement("div");
-    el.className = "history-item";
-    el.textContent = "◦ " + item.title;
-    el.title = item.title;
-    el.onclick = () => {
-      currentId = item.id;
-      messages = item.messages || [];
-      messagesBox.innerHTML = "";
-      welcome.classList.toggle("hidden", messages.length > 0);
-
-      messages.forEach(m => addMessage(m.role, m.content));
-      $("sidebar").classList.remove("open");
-    };
-    $("history").appendChild(el);
-  });
-}
-
-function newChat() {
-  saveCurrent();
-  currentId = Date.now();
-  messages = [];
-  messagesBox.innerHTML = "";
-  welcome.classList.remove("hidden");
-  promptBox.value = "";
-  promptBox.focus();
-  $("sidebar").classList.remove("open");
-}
-
-function setMode(next) {
-  mode = next;
-  const isImage = mode === "image";
-
-  $("modeTitle").textContent = isImage ? "GÉNÉRATION D'IMAGES" : "MADARA AI";
-  $("textMode").classList.toggle("active", !isImage);
-  $("imageMode").classList.toggle("active", isImage);
-  $("inputHint").textContent = isImage
-    ? "Décris précisément l'image que tu souhaites créer."
-    : "Entrée pour envoyer · Maj + Entrée pour une nouvelle ligne";
-  promptBox.placeholder = isImage
-    ? "Décris ton image : style, couleurs, ambiance…"
-    : "Écris ton message à MADARA AI…";
-  promptBox.focus();
-}
-
-async function sendMessage() {
-  const content = promptBox.value.trim();
-  if (!content || busy) return;
-
-  if (mode === "image") {
-    notify("La génération nécessite une API d'images configurée côté serveur.");
-    return;
-  }
-
-  busy = true;
-  $("sendBtn").disabled = true;
-  promptBox.value = "";
-
-  addMessage("user", content);
-  messages.push({ role: "user", content });
-
-  const bubble = addMessage("assistant", "MADARA AI réfléchit…");
-  bubble.classList.add("typing");
-
-  try {
-    const response = await fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages: messages.slice(-20) })
+    document.querySelectorAll("[data-mode]").forEach(button => {
+      button.addEventListener("click", () => setMode(button.dataset.mode));
     });
 
-    const data = await response.json();
+    function addMessage(role, text, imageUrl = "") {
+      welcome.classList.add("hidden");
 
-    if (!response.ok) {
-      throw new Error(data.error || "Erreur du serveur (" + response.status + ")");
+      const box = document.createElement("div");
+      box.className = "message " + (role === "user" ? "user" : "ai");
+
+      const label = document.createElement("b");
+      label.textContent = role === "user" ? "TOI" : "MADARA AI";
+      box.appendChild(label);
+
+      const content = document.createElement("div");
+      content.textContent = text;
+      box.appendChild(content);
+
+      if (imageUrl) {
+        const image = document.createElement("img");
+        image.src = imageUrl;
+        image.alt = "Image générée par MADARA AI";
+        image.loading = "lazy";
+        box.appendChild(image);
+
+        const link = document.createElement("a");
+        link.href = imageUrl;
+        link.download = "madara-ai-image.png";
+        link.target = "_blank";
+        link.rel = "noopener";
+        link.textContent = "Ouvrir ou télécharger l’image";
+        link.style.cssText = "display:inline-block;margin-top:12px;color:#ff526d";
+        box.appendChild(link);
+      }
+
+      messages.appendChild(box);
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+      return box;
     }
 
-    if (typeof data.reply !== "string" || !data.reply.trim()) {
-      throw new Error("Le serveur n'a pas renvoyé de réponse.");
+    function showNotice(text) {
+      notice.textContent = text;
     }
 
-    bubble.classList.remove("typing");
-    bubble.innerHTML = formatText(data.reply);
-    messages.push({ role: "assistant", content: data.reply });
-    saveCurrent();
-  } catch (error) {
-    bubble.classList.remove("typing");
-    bubble.textContent = "Impossible de contacter MADARA AI. " +
-      (error.message || "Vérifie le serveur et la connexion.");
-    notify("Connexion à l'IA échouée.");
-  } finally {
-    busy = false;
-    $("sendBtn").disabled = false;
-    $("chatArea").scrollTop = $("chatArea").scrollHeight;
-    promptBox.focus();
-  }
-}
+    function getAssistantText(data) {
+      return data?.reply
+        || data?.message
+        || data?.choices?.[0]?.message?.content
+        || data?.output_text
+        || "";
+    }
 
-$("sendBtn").addEventListener("click", sendMessage);
-promptBox.addEventListener("keydown", e => {
-  if (e.key === "Enter" && !e.shiftKey) {
-    e.preventDefault();
-    sendMessage();
-  }
-});
+    async function sendChat(text) {
+      history.push({ role: "user", content: text });
 
-$("newChat").onclick = newChat;
-$("clearBtn").onclick = newChat;
-$("menuBtn").onclick = () => $("sidebar").classList.toggle("open");
-$("textMode").onclick = () => setMode("chat");
-$("imageMode").onclick = () => setMode("image");
-$("imageNav").onclick = () => {
-  setMode("image");
-  $("sidebar").classList.remove("open");
-};
-$("chatNav").onclick = () => {
-  setMode("chat");
-  $("sidebar").classList.remove("open");
-};
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: text,
+          messages: history
+        })
+      });
 
-document.querySelectorAll(".suggestion").forEach(button => {
-  button.onclick = () => {
-    setMode("chat");
-    promptBox.value = button.dataset.prompt;
-    promptBox.focus();
-  };
-});
+      const data = await response.json().catch(() => ({}));
 
-loadHistory();
-</script>
+      if (!response.ok) {
+        throw new Error(data.error || data.message || "Erreur de connexion à l’IA.");
+      }
+
+      const reply = getAssistantText(data);
+
+      if (typeof reply !== "string" || !reply.trim()) {
+        throw new Error("L’API n’a renvoyé aucune réponse. Vérifie /api/chat.");
+      }
+
+      history.push({ role: "assistant", content: reply });
+      addMessage("assistant", reply);
+    }
+
+    async function generateImage(text) {
+      /*
+       * Cette route doit être créée côté serveur.
+       * La clé HF_TOKEN doit rester dans les variables Vercel.
+       */
+      const response = await fetch("/api/image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: text })
+      });
+
+      const contentType = response.headers.get("content-type") || "";
+
+      if (!response.ok) {
+        let message = "La génération d’images a échoué.";
+        if (contentType.includes("application/json")) {
+          const data = await response.json().catch(() => ({}));
+          message = data.error || data.message || message;
+        }
+        throw new Error(message);
+      }
+
+      if (contentType.includes("image/")) {
+        const blob = await response.blob();
+        const imageUrl = URL.createObjectURL(blob);
+        addMessage("assistant", "Voici ton image générée.", imageUrl);
+        return;
+      }
+
+      const data = await response.json().catch(() => ({}));
+      const imageUrl = data.imageUrl || data.url || data.image;
+
+      if (typeof imageUrl === "string" && imageUrl) {
+        addMessage("assistant", "Voici ton image générée.", imageUrl);
+      } else {
+        throw new Error("L’API ne renvoie pas d’image. La route /api/image doit être configurée.");
+      }
+    }
+
+    composer.addEventListener("submit", async event => {
+      event.preventDefault();
+
+      const text = promptInput.value.trim();
+      if (!text || sendButton.disabled) return;
+
+      addMessage("user", text);
+      promptInput.value = "";
+      showNotice("");
+      sendButton.disabled = true;
+      sendButton.textContent = "…";
+
+      try {
+        if (mode === "chat") {
+          await sendChat(text);
+        } else {
+          await generateImage(text);
+        }
+      } catch (error) {
+        addMessage("assistant", "Impossible de terminer la demande : " + error.message);
+      } finally {
+        sendButton.disabled = false;
+        sendButton.textContent = "➤";
+        promptInput.focus();
+      }
+    });
+
+    promptInput.addEventListener("keydown", event => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        composer.requestSubmit();
+      }
+    });
+
+    document.getElementById("newChat").addEventListener("click", () => {
+      history = [];
+      messages.replaceChildren();
+      welcome.classList.remove("hidden");
+      showNotice("");
+      promptInput.value = "";
+      setMode("chat");
+    });
+  </script>
 </body>
 </html>
